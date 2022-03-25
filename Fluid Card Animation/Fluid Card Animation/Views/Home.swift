@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct Home: View {
+    
+    @State var expandCard = false
+    
     var body: some View {
         VStack {
             Button {
@@ -23,7 +26,10 @@ struct Home: View {
             }
             .foregroundColor(.black)
             
-            LiquidCard(title: "Card One", subTitle: "subtitle one", detail: "detail one", description: "description one")
+            LiquidCard(title: "Card One", subTitle: "subtitle one", detail: "detail one", description: "description one") {
+                // toggle card animation
+                expandCard.toggle()
+            }
         }
         .padding()
         .frame(maxHeight: .infinity, alignment: .top)
@@ -33,7 +39,7 @@ struct Home: View {
 extension Home {
     
     @ViewBuilder
-    private func LiquidCard(title: String, subTitle: String, detail: String, description: String, backgroundColor: Color = Color.blue) -> some View {
+    private func LiquidCard(title: String, subTitle: String, detail: String, description: String, backgroundColor: Color = Color.blue, onExpand: @escaping () -> Void ) -> some View {
         ZStack {
             VStack(spacing: 20) {
                 Text(title)
@@ -42,7 +48,7 @@ extension Home {
                 
                 HStack(spacing: 10) {
                     Image(systemName: "speaker.3")
-                        .foregroundColor(.gray)
+                        .foregroundColor(.white)
                     
                     Text(subTitle)
                         .fontWeight(.semibold)
@@ -59,6 +65,20 @@ extension Home {
                         .fill(backgroundColor)
                     
                 }
+            }
+            .overlay(alignment: .bottom) {
+                Button {
+                    onExpand()
+                } label: {
+                    Image(systemName: "chevron.down")
+                        .font(.title3.bold())
+                        .foregroundColor(backgroundColor)
+                        .padding(30)
+                        .background(.white, in: RoundedRectangle(cornerRadius: 20, style: .continuous ))
+                }
+                .shadow(color: .black.opacity(0.15), radius: 5, x: 5, y: 5)
+                .shadow(color: .black.opacity(0.15), radius: 5, x: -5, y: 5)
+                .padding(.bottom, -25)
             }
         }
     }
