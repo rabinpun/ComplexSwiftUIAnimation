@@ -28,8 +28,11 @@ struct Home: View {
             
             LiquidCard(title: "Card One", subTitle: "subtitle one", detail: "detail one", description: "description one") {
                 // toggle card animation
-                expandCard.toggle()
+                withAnimation(.interactiveSpring(response: 0.7, dampingFraction: 0.8, blendDuration: 0.8)) {
+                    expandCard.toggle()
+                }
             }
+            .frame(maxHeight: .infinity)
         }
         .padding()
         .frame(maxHeight: .infinity, alignment: .top)
@@ -57,7 +60,7 @@ extension Home {
             }
             .padding()
             .frame(maxWidth: .infinity)
-            .frame(height: 350)
+            .frame(height: expandCard ? 350 : 250)
             .background {
                 GeometryReader { proxy in
                     let size = proxy.size
@@ -66,6 +69,7 @@ extension Home {
                     
                 }
             }
+            // MARK: Overlayed Expand Button
             .overlay(alignment: .bottom) {
                 Button {
                     onExpand()
@@ -80,7 +84,35 @@ extension Home {
                 .shadow(color: .black.opacity(0.15), radius: 5, x: -5, y: 5)
                 .padding(.bottom, -25)
             }
+            .zIndex(1)
+            
+            // MARK: Expanded Card
+            VStack(spacing: 20) {
+                Text(detail)
+                    .font(.largeTitle.bold())
+                
+                Text(description)
+                    .font(.title3)
+                    .lineLimit(3)
+                    .padding(.horizontal)
+                    .multilineTextAlignment(.center)
+            }
+            .foregroundColor(.white)
+            .padding(.horizontal)
+            .padding(.vertical, 40)
+            .frame(maxWidth: .infinity)
+            .background {
+                GeometryReader { proxy in
+                    let size = proxy.size
+                    RoundedRectangle(cornerRadius: 35, style: .continuous)
+                        .fill(backgroundColor)
+                }
+            }
+            .zIndex(0)
+            .offset(y: expandCard ? 0 : 250)
+            
         }
+        .offset(y: expandCard ? 0 : -50)
     }
     
 }
